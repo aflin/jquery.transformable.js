@@ -1,0 +1,103 @@
+<!doctype html>
+<html>
+<head>
+<title>jquery.transformable.js test</title>
+<meta charset="utf-8">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+<script src="./jquery.transform2d.js" type="text/javascript"></script>
+<script src="./jquery.transformable.js" type="text/javascript"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+    //instructions and change log is in the jquery.transformable.js
+    //click "Manage Resouces to the left to get the link.
+    var b=$('.box');
+    var ib=$('.infobox');
+    b.draggable({stop: showinfo});
+    b.resizable({stop: showinfo});
+    b.transformable( {
+        rotateStop: showinfo,
+        skewStop: showinfo,
+        scaleStop: showinfo,
+        rotate: showrotate,
+        scale: constrainscale
+    });
+    
+    //containment is still a bit expiramental
+    $('#box3').draggable('option','containment','parent')
+        .transformable('option','containment',true)
+        .resizable('option','containment','parent');
+    
+    function constrainscale(e,ui) {
+        //uncomment to see how you can set value to constrain size
+        //if (ui.scalex<0.5) ui.scalex=0.5;
+        //if (ui.scaley<0.5) ui.scaley=0.5;
+        //if (ui.scalex>2.0) ui.scalex=2.0;
+        //if (ui.scaley>2.0) ui.scaley=2.0;
+    }
+    
+    function showrotate(e,ui) {
+        $('#rotate').html(ui.angle.rad);
+        //uncomment these to see how you can set the value to constrain
+        //angle
+        //if(ui.angle.rad>1)ui.angle.rad=1;
+        //if(ui.angle.rad<-1) ui.angle.rad=-1;
+    }
+    
+    function showinfo (e,ui) {
+        var u=$(this).getTransform();
+        var o=$(this).tOffset();
+        function xytostr(c) {
+            return(parseInt(c.x)+','+parseInt(c.y));
+        }
+        ib.html(
+            'Div Transformation Info:<ul style="margin-top:0px"><li>Current Matrix:<br><span style="font-size:12px">'
+            + $(this).matrixToArray()+'</span></li><li>Rotation:<span id="rotate">'
+            +u.rotate+'</span></li><li>Skew:'
+            +u.skew+"</li><li>Scale:"
+            +u.scale+'</li><li>Offset:<ul><li>'
+            +'left:'+parseInt(o.left)+"</li><li>top:"+parseInt(o.top)
+            +'</li><li>right:'+parseInt(o.right)+'</li><li>bottom:'+parseInt(o.bottom)
+            +'</li></ul>'
+            +'<li>Corners:<ul><li>lt:'+xytostr(o.corners[0])
+            +'</li><li>rt:'+xytostr(o.corners[1])
+            +'</li><li>rb:'+xytostr(o.corners[2])
+            +'</li><li>lb:'+xytostr(o.corners[3])+'</ul></ul>'
+        );
+    }
+    $('.reset').click(function() {
+        $(this).parent().transformable('reset');
+        showinfo.call($(this).parent());
+    });
+});
+</script>
+<style>
+.box {position: absolute; width:300px; height: 300px; border: 1px black solid; top: 10px; z-index:10; left: 320px;}
+.box1 {background-color: #d0d0d0;}
+.box2 {position: absolute; top: 30px; left: 10px; width:200px; height: 200px; border: 1px blue solid; background-color: white;}
+.box.ui-resizable-disabled { opacity: 1.0; filter: Alpha(Opacity=100);}
+.infobox {position: absolute; width:300px; height: 300px; border: 1px green solid; font-size: 16px}
+li{ list-style-type: bold; padding: 0; margin-left: 36px;} 
+button {position: relative; left: 20px;}
+</style>
+</head>
+<body>
+<div class='box box1'>
+    <button class='reset'>Reset Me</button>
+        <div class='box box2'>
+            <button class='reset'>Reset Me</button><br>
+            <img width=200 height=119 src="http://upload.wikimedia.org/wikipedia/commons/e/e9/Dog%27s_guardian_angel.jpg">  
+	    <br>this box is not contained
+        </div>
+</div>
+<div class='box box1' style='top:320px;left:10px'>
+    <button class='reset'>Reset Me</button>
+        <div id='box3' class='box box2'>
+            <button class='reset'>Reset Me</button><br>
+            <img width=200 height=150 src="http://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Week_z00.jpg/200px-Week_z00.jpg">This one is contained</div>
+    <div style="bottom: 0px; left: 10px; position: absolute; font-size: 12px">An example with parent containment</div>
+</div>
+<div class='infobox'>Div Transformation Info:</div>
+</body>
+</html>
