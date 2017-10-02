@@ -1,11 +1,13 @@
 # jquery.transformable.js
 Transform, rotate, skew and scale divs in same manner as draggable/resizable in jquery-ui
+## Demo
+http://jsfiddle.net/aflin/jdjak686/
 
-##Simple Usage:
+## Simple Usage:
 ```
 $('#mydiv').draggable().transformable().resizable();
 ```
-##Basic options and callbacks:
+## Basic options and callbacks:
 ```
 $('#mydiv').transformable( {
         rotateStart: function(e,ui){},
